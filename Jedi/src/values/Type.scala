@@ -71,6 +71,15 @@ class Type(str: String =null) extends Value with Comparable[Type] {
       
       t
     }
+    
+    def getDefaultValue(): Value = {
+      
+      val typ: Value = this match{
+        case Type.BOOLE => new Boole(false)
+        case Type.NUMBER => new Number(0)
+      }
+      typ      
+    }
 }
 
 object Type{
@@ -86,6 +95,8 @@ object Type{
     val TUPLE = new Type("Tuple")
     val FUNCTION = new Type("Function")
     val INTEGER = new Type("Integer")
+    val VOID = new Type("Void")
+
 
 
 }

@@ -149,9 +149,9 @@ class Parser extends RegexParsers {
     case _ => Nil
   }
     
-  def parametersWithType: Parser[Map[Identifier, Identifier]] = "("~> repsep(member, ",") <~")" ^^ (Map() ++ _)
+  def parametersWithType: Parser[Map[Identifier, Expression]] = "("~> repsep(member, ",") <~")" ^^ (Map() ++ _)
   
-  def member: Parser[(Identifier, Identifier)] = identifier~":"~identifier ^^ { 
+  def member: Parser[(Identifier, Expression)] = identifier~":"~expression ^^ { 
     case name~":"~value => (name, value) 
   }
   

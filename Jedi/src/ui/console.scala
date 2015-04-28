@@ -28,8 +28,11 @@ object console {
   
   def repl {
         
-    globalEnv.put(new Identifier("Boolean"), new Boole(true));
-    globalEnv.put(new Identifier("Number"), new Number(1));
+//    globalEnv.put(new Identifier("Boolean"), new Boole(true));
+//    globalEnv.put(new Identifier("Number"), new Number(1));
+
+    globalEnv.put(new Identifier("Boolean"), boole);
+    globalEnv.put(new Identifier("Number"), number);
 
     var cmmd: String = ""
     var more = true

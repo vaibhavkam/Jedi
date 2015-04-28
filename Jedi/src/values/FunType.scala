@@ -12,7 +12,7 @@ class FunType(domain: Type, range:Type) extends Type{
   this.typ = Type.FUNCTION;
 
   override def toString(): String ={
-      domain+" -> "+range;
+      "("+domain+" -> "+range+")";
     }
   
    def getDomain(): Type ={
@@ -22,4 +22,9 @@ class FunType(domain: Type, range:Type) extends Type{
    def getRange(): Type ={
       range;
    }
+   
+   override def getDefaultValue(): Value = {
+    
+     domain.getDefaultValue()      
+  }
 }

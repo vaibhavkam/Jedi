@@ -47,7 +47,8 @@ object system {
       case "sub" => getSubType(args)
       case "mul" => getMulType(args)
       case "div" => getDivType(args)
-
+      case "fun" => getFunType(args)
+      case "tuple" => getTupleType(args)
       case _ => throw new UndefinedException(opcode.name)
     }
   }
@@ -163,7 +164,7 @@ object system {
       new TupleType(typeList.toList)
     }
 
-   private def fun(vals: List[Value]): Type = {
+   private def fun(vals: List[Value]): Value = {
       
       if (vals.isEmpty) 
         throw new TypeException("Function expects more than 1 input")
@@ -245,6 +246,30 @@ object system {
      if (ok.length < types.length)
         return Type.ERROR
      Type.NUMBER
+    }
+
+    private def getFunType(types: List[Type]): Type = {
+      
+      if (types.isEmpty) 
+       return  Type.ERROR
+            
+       val ok = types.filter(_.toString().equals(Type.TYPE.toString()))
+       
+       if (ok.length < types.length)
+          return Type.ERROR
+       Type.FUNCTION
+    }
+
+    private def getTupleType(types: List[Type]): Type = {
+      
+      if (types.isEmpty) 
+       return  Type.ERROR
+            
+       val ok = types.filter(_.toString().equals(Type.TYPE.toString()))
+       
+       if (ok.length < types.length)
+          return Type.ERROR
+       Type.TUPLE
     }
 
 }

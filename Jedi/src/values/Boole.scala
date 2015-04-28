@@ -8,7 +8,7 @@ import expressions.Literal
 /**
  * @author Vaibhav
  *
- */
+ */ 
 class Boole(val value: Boolean) extends Literal with Value {
 
     this.typ = Type.BOOLE;

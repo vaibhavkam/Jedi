@@ -15,11 +15,16 @@ class TupleType(components: List[Type]) extends Type {
 
     override def toString(): String ={
 
-      components.mkString(" * ")
+      "("+components.mkString(" * ")+")"
     }
 
     def getComponent(): List[Type] ={
 
       components
-    } 
+    }
+    
+     override def getDefaultValue(): Value = {
+    
+     components.head.getDefaultValue()      
+    }
 }
