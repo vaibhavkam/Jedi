@@ -18,21 +18,6 @@ case class Lambda(parameters: Map[Identifier,Expression] , body: Expression) ext
   
   def getType(env: Environment):Type = {
 
-//      val localEnv = new Environment(env);
-//      var paramterList = new ListBuffer[Identifier]()
-//      var typeList = new ListBuffer[Identifier]()
-//
-//      for ((k,v) <- parameters) {
-//        paramterList+=k
-//        typeList+=v
-//      } 
-//
-//      var args: List[Value] = typeList.toList.map(_.execute(localEnv))  
-//
-//      localEnv.put(paramterList.toList, args)
-//      
-//      body.getType(localEnv)
-    
       val localEnv = new Environment(env);
       var paramterList = new ListBuffer[Identifier]()
       var typeList = new ListBuffer[Type]()
