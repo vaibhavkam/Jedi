@@ -28,8 +28,9 @@ case class Lambda(parameters: Map[Identifier,Expression] , body: Expression) ext
           typ = value.asInstanceOf[Type]
         else
           typ = Type.VOID
-          
-        localEnv.put(k, typ.getDefaultValue())
+                    
+        localEnv.put(k, new Dummy(typ))
+
         typeList+=typ
       } 
       

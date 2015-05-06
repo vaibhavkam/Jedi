@@ -32,6 +32,10 @@ class Boole(val value: Boolean) extends Literal with Value {
     override def toString(): String ={
       this.value.toString()
     }
+  
+    override def getType():Type ={
+       this.typ
+    }
 
 }
 
@@ -68,7 +72,5 @@ object Boole{
       println()
     }
     
-    def getType(env: Environment):Type ={
-      Type.BOOLE
-    }
+
 }

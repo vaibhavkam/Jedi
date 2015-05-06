@@ -3,17 +3,18 @@
  */
 package ui
 
-import values.Value
-import values.Number
+import scala.collection.mutable.ListBuffer
+import java.lang.Double
+import expressions.Expression
 import expressions.Identifier
 import values.Boole
-import values.Variable
-import values.Type
-import values.TupleType
-import scala.collection.mutable.MutableList
 import values.FunType
-import scala.collection.mutable.ListBuffer
-import expressions.Expression
+import values.Number
+import values.Tuple
+import values.TupleType
+import values.Type
+import values.Value
+import values.Variable
 
 /**
  * @author Vaibhav
@@ -34,9 +35,10 @@ object system {
       case "var" => varFunc(args)
       case "val" => valFunc(args)
       case "valType" => valType(args)
-      case "tuple" => tuple(args)
+      case "tupleType" => tuple(args)
       case "fun" => fun(args)
       case "typeLess" => typeLess(args)
+      case "getTupleValue" => getTupleValue(args)
       case _ => throw new UndefinedException(opcode.name)
     }
   }
@@ -48,7 +50,7 @@ object system {
       case "mul" => getMulType(args)
       case "div" => getDivType(args)
       case "fun" => getFunType(args)
-      case "tuple" => getTupleType(args)
+      case "tupleType" => getTupleType(args)
       case _ => throw new UndefinedException(opcode.name)
     }
   }
@@ -178,34 +180,6 @@ object system {
                
       new Number(vals.head.asInstanceOf[Type].compareTo(vals.last.asInstanceOf[Type]))
     }
-
-//   private def getMulType(vals: List[Value]): Type = {
-//     var t: Value = null;
-//     for( va <- vals ){
-//         if(va.isInstanceOf[Type])
-//          t=va;
-//         else
-//          t=va.typ;
-//         
-//         if(!t.asInstanceOf[Type].toString().equalsIgnoreCase(Type.NUMBER.toString()))
-//           return Type.ERROR
-//      }
-//      Type.NUMBER
-//    }
-//   
-//   private def getDivType(vals: List[Value]): Type = {
-//     var t: Value = null;
-//     for( va <- vals ){
-//         if(va.isInstanceOf[Type])
-//          t=va;
-//         else
-//          t=va.typ;
-//         
-//         if(!t.asInstanceOf[Type].toString().equalsIgnoreCase(Type.NUMBER.toString()))
-//           return Type.ERROR
-//      }
-//      Type.NUMBER
-//    }
       
     private def getAddType(types: List[Type]): Type = {   
       
@@ -270,6 +244,22 @@ object system {
        if (ok.length < types.length)
           return Type.ERROR
        Type.TUPLE
+    }
+
+    private def getTupleValue(vals: List[Value]): Value = {
+      
+      if (vals.isEmpty || vals.length != 2) 
+        throw new TypeException("get expects 2 input")
+      
+      if (vals.head.isInstanceOf[Tuple]) {      
+        if(vals.last.isInstanceOf[Number])
+          vals.head.asInstanceOf[Tuple].getComponent()(Double.parseDouble(vals.last.asInstanceOf[Number].toString()).toInt)
+        else
+          throw new TypeException("get expects Tuple as a first parameter ")
+      }
+      else {
+        throw new TypeException("get expects Tuple as a first parameter ")
+      }
     }
 
 }

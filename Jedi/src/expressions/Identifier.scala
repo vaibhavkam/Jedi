@@ -8,6 +8,7 @@ import values.Value
 import values.Notification
 import ui.UndefinedException
 import values.Type
+import values.Dummy
 
 /**
  * @author Vaibhav
@@ -23,6 +24,6 @@ case class Identifier(name: String,var typ: Type =null) extends Expression with 
   
   def getType(env: Environment):Type ={
     val vals = env.find(this)
-    vals.typ
+    vals.getType()
   }
 }

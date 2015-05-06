@@ -14,8 +14,6 @@ import values.Type
  */
 case class Literal() extends Expression with Value with Serializable {
 
-    this.typ = Type.BOOLE;
-
     def execute(env: Environment): Value = this    
     
     def getType(env: Environment):Type ={

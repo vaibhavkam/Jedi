@@ -11,9 +11,8 @@ import expressions.Literal
  */
 class Number(val value:Double) extends Literal with Value {
 
-  this.typ = Type.NUMBER;
-
-
+  this.typ= Type.NUMBER
+  
   def this(num: String){
     this(num.toDouble)
   }
@@ -52,6 +51,9 @@ class Number(val value:Double) extends Literal with Value {
  
   override def toString: String = value.toString
 
+  override def getType():Type ={
+     this.typ
+  }
 }
 
 object Number {
@@ -97,7 +99,4 @@ object Number {
 
     }
     
-    def getType(env: Environment):Type ={
-      Type.NUMBER
-    }
  }

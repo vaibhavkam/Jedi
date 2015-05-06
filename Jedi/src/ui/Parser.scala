@@ -6,17 +6,17 @@ import values._
 
 class Parser extends RegexParsers {
 
-  def expression: Parser[Expression] =  expType| typeInequality| fun| tuple| valType| declaration | conditional | disjunction | failure("Invalid expression")
+  def expression: Parser[Expression] =   tupleType| getTupleValue| expType| typeInequality| fun|  valType| declaration | conditional | disjunction | failure("Invalid expression")
   
-  def expressionTypeCheck: Parser[Expression] =  fun| tuple | identifier
+  def expressionTypeCheck: Parser[Expression] =  tupleType| fun|  identifier
 
   def typeInequality: Parser[Expression] = expressionTypeCheck ~ "<" ~ expressionTypeCheck ^^{
     case exp1 ~ "<" ~ exp2 => FunCall(Identifier("typeLess"), List(exp1,exp2))
     case _ => throw new SyntaxException()
   }
   
-  def tuple: Parser[Expression] = "Tuple" ~ operands ^^{
-    case "Tuple" ~ exp => new FunCall(Identifier("tuple"), exp)
+  def tupleType: Parser[Expression] = "TupleType" ~ operands ^^{
+    case "TupleType" ~ exp => new FunCall(Identifier("tupleType"), exp)
     case _ => throw new SyntaxException()
   }
 
@@ -114,9 +114,9 @@ class Parser extends RegexParsers {
     case _ => Nil
   }
   
-  def term: Parser[Expression] = assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
+  def term: Parser[Expression] = getTupleValue| assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
 
-  def literal: Parser[Literal] = boole | numeral
+  def literal: Parser[Literal] = boole | numeral | tuple
 
   def numeral: Parser[Number] = """(\+|-)?[0-9]+(\.[0-9]+)?""".r ^^
     {
@@ -171,5 +171,14 @@ class Parser extends RegexParsers {
   def iteration: Parser[Expression] = "while" ~ "(" ~ expression ~ ")" ~ expression ^^ {
     case "while" ~ "(" ~ exp1 ~ ")" ~ exp2 => Iteration(List(exp1, exp2))
   }
-  
+
+  def tuple: Parser[Tuple] = "Tuple" ~> operands  ^^ {
+    case p => new Tuple(p.asInstanceOf[List[values.Value]])
+  }
+
+  def getTupleValue: Parser[Expression] = "get" ~ operands ^^{
+    case "get" ~ exp => new FunCall(Identifier("getTupleValue"), exp)
+    case _ => throw new SyntaxException()
+  }
+
 }

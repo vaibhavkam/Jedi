@@ -19,7 +19,9 @@ object console {
   integer.typ=Type.TYPE
   
   def execute(cmmd: String): String = {
+    
     val tree = parsers.parseAll(parsers.expression, cmmd)
+
     tree match {
       case t: parsers.Failure => throw new SyntaxException(t)
       case _ => "" + tree.get.execute(globalEnv)
@@ -28,12 +30,9 @@ object console {
   
   def repl {
         
-//    globalEnv.put(new Identifier("Boolean"), new Boole(true));
-//    globalEnv.put(new Identifier("Number"), new Number(1));
-
     globalEnv.put(new Identifier("Boolean"), boole);
     globalEnv.put(new Identifier("Number"), number);
-
+    
     var cmmd: String = ""
     var more = true
     while (more) {
@@ -68,6 +67,13 @@ object console {
         Console.flush
       }
     }
+  }
+
+  
+   def test {
+        
+    globalEnv.put(new Identifier("Boolean"), boole);
+    globalEnv.put(new Identifier("Number"), number); 
   }
 
   def main(args: Array[String]): Unit = { repl }
