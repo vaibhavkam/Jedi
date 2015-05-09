@@ -13,7 +13,9 @@ case class Lambda(parameters: Map[Identifier,Expression] , body: Expression) ext
     for ((k,v) <- parameters) {
       paramterList+=k
     } 
-	  new Closure(paramterList.toList, body, env)
+	  val closure = new Closure(paramterList.toList, body, env)
+    closure.typ=this.getType(env);
+    closure
 	}
   
   def getType(env: Environment):Type = {

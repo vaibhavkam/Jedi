@@ -19,4 +19,7 @@ class Closure(params: List[Identifier], body: Expression, defEnv: Environment) e
     }
   }
   
+    override def getType():Type ={
+      this.typ
+  }
  }
