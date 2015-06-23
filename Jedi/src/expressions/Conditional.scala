@@ -37,6 +37,15 @@ case class Conditional(conditon: Expression, consequent: Expression, alternate: 
     }
     
   def getType(env: Environment):Type ={
-    Type.NUMBER
+        
+    if(conditon.getType(env)==Type.BOOLE){
+      
+      if(alternate!=null && (consequent.getType(env)==alternate.getType(env)))
+        consequent.getType(env)
+      else
+        Type.ERROR
+    }
+    else
+      Type.ERROR    
   }
 }

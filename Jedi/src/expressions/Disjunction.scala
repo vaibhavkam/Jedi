@@ -29,7 +29,12 @@ case class Disjunction(operands: List[Expression]) extends SpecialForm{
       new Boole(result)   
     }
       
-  def getType(env: Environment):Type ={
-    Type.NUMBER
-  }
+    def getType(env: Environment):Type ={
+      val args: List[Type] = operands.map(_.getType(env)) 
+      val ok = args.filter(_ ==Type.BOOLE)
+      if (ok.length == args.length)
+        Type.BOOLE
+      else
+        Type.ERROR
+    }
 }
