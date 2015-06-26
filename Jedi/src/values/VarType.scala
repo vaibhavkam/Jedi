@@ -11,4 +11,7 @@ class VarType(contentType: Type) extends Type  {
       this.typ+"("+contentType.toString()+")";
   }
 
+  def getContentType(): Type ={
+    contentType
+  }
 }

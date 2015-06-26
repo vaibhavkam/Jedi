@@ -53,10 +53,13 @@ object system {
       case "sub" => getSubType(operands, env)
       case "mul" => getMulType(operands, env)
       case "div" => getDivType(operands, env)
+      case "equals" => getEqualsType(operands, env)
+      case "less" => getLessType(operands, env)
       case "fun" => getFunType(operands, env)
       case "tupleType" => getTupleType(operands, env)
       case "getTupleValue" => getTupleValueType(operands, env)
       case "var" => getVarFuncType(operands, env)
+      case "val" => getValFuncType(operands, env)
       case _ => throw new UndefinedException(opcode.name)
     }
   }
@@ -236,6 +239,29 @@ object system {
      Type.NUMBER
     }
 
+    private def getEqualsType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
+     if (types.isEmpty) 
+       return  Type.ERROR
+     val ok = types.filter(_.toString().equals(types.head.toString()))
+     
+     if (ok.length < types.length)
+        return Type.ERROR
+     Type.BOOLE
+    }
+
+    private def getLessType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
+     if (types.isEmpty) 
+       return  Type.ERROR
+     val ok = types.filter(_.toString().equals(types.head.toString()))
+     if (ok.length < types.length)
+        return Type.ERROR
+     Type.BOOLE
+    }
+
     private def getFunType(operands: List[Expression], env: Environment): Type = {   
       
      val types: List[Type] = operands.map(_.getType(env))
@@ -307,6 +333,17 @@ object system {
         Type.ERROR
       else
         new VarType(types.head)
+
+    }
+
+    private def getValFuncType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
+     
+      if (types.isEmpty || types.length > 1) 
+        Type.ERROR
+      else
+        types.head.asInstanceOf[VarType].getContentType()
 
     }
 

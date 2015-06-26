@@ -21,6 +21,12 @@ case class Assignment(id: Identifier, exp: Expression) extends SpecialForm {
   
 
   def getType(env: Environment):Type ={
-    Type.NUMBER
+
+    if(exp.getType(env)!=id.getType(env).asInstanceOf[VarType].getContentType()){
+      Type.ERROR
+    }
+    else{
+      Type.NOTIFICATION
+    }
   }
 }
