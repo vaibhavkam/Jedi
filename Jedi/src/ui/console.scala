@@ -27,7 +27,17 @@ object console {
       case _ => "" + tree.get.execute(globalEnv)
     }
   }
-  
+
+  def getType(cmmd: String): String = {
+    
+    val tree = parsers.parseAll(parsers.expression, cmmd)
+
+    tree match {
+      case t: parsers.Failure => throw new SyntaxException(t)
+      case _ => "" + tree.get.getType(globalEnv)
+    }
+  }
+
   def repl {
         
     globalEnv.put(new Identifier("Boolean"), boole);
@@ -44,7 +54,10 @@ object console {
         } else if (cmmd == "quit") {
           println("bye")
           more = false
-        } else {
+        } else if(cmmd.split(" +")(0)=="type"){
+          println(getType(cmmd.split(" +",2)(1)).toString());
+        } 
+        else {
           println(execute(cmmd).toString())
         }
       } catch {

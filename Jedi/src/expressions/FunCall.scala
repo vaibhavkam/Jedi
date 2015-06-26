@@ -18,13 +18,6 @@ case class FunCall(operator: Expression, operands: List[Expression] = Nil) exten
 
   def execute(env: Environment): Value = {    
 
-    if(operator.equals(Identifier("valType"))){
-
-       val args: List[Type] = operands.map(_.getType(env)) 
-       args.head
-    }
-    else{
-      
       val args: List[Value] = operands.map(_.execute(env))  
       
       try {
@@ -45,12 +38,10 @@ case class FunCall(operator: Expression, operands: List[Expression] = Nil) exten
           system.execute(operator.asInstanceOf[Identifier], args)
         }
       }
-    }
   }
   
   def getType(env: Environment):Type ={
            
-        val args: List[Type] = operands.map(_.getType(env))  
-        system.getType(operator.asInstanceOf[Identifier],args)
+        system.getType(operator.asInstanceOf[Identifier],operands, env)
   }
 }

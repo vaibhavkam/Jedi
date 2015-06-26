@@ -2,9 +2,16 @@ package values
 
 class Notification(msg: String) extends Value{
 
+    this.typ = Type.NOTIFICATION;
+
     override def toString(): String ={
       this.msg
     }
+    
+    override def getType():Type ={
+       this.typ
+    }
+
 }
 
 object Notification{
