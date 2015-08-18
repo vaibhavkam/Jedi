@@ -17,7 +17,16 @@ object console {
   number.typ=Type.TYPE
   val integer = Type.INTEGER
   integer.typ=Type.TYPE
-  
+
+  def parse(cmmd: String): Expression = {
+    
+    val tree = parsers.parseAll(parsers.expression, cmmd)
+    tree match {
+      case t: parsers.Failure => throw new SyntaxException(t)
+      case _ => tree.get
+    }
+  }
+
   def execute(cmmd: String): String = {
     
     val tree = parsers.parseAll(parsers.expression, cmmd)
@@ -27,7 +36,12 @@ object console {
       case _ => "" + tree.get.execute(globalEnv)
     }
   }
-  
+
+  def execute(exp: Expression): String = {
+    
+     ""+exp.execute(globalEnv)
+  }
+
   def repl {
         
     globalEnv.put(new Identifier("Boolean"), boole);
@@ -45,6 +59,14 @@ object console {
           println("bye")
           more = false
         } else {
+//          val expresion = parse(cmmd);
+//          println(expresion)
+//          val typ = expresion.getType(globalEnv);
+//                    println(typ)
+//          if(typ!=Type.ERROR)
+//            println(execute(expresion).toString())
+//          else
+//            throw new Exception()
           println(execute(cmmd).toString())
         }
       } catch {
