@@ -6,7 +6,7 @@ import values._
 
 class Parser extends RegexParsers {
 
-  def expression: Parser[Expression] =   tupleType| getTupleValue| expType| typeInequality| fun|  valType| declaration | conditional | disjunction | failure("Invalid expression")
+  def expression: Parser[Expression] =   tupleType| getTupleValue | typeInequality| fun | declaration | conditional | disjunction | failure("Invalid expression")
   
   def expressionTypeCheck: Parser[Expression] =  tupleType| fun|  identifier
 
@@ -25,15 +25,15 @@ class Parser extends RegexParsers {
     case _ => throw new SyntaxException()
   }
   
-  def valType: Parser[Expression] = "type" ~ expression^^{
-    case "type" ~ exp => new FunCall(Identifier("valType"), List(exp))
-    case _ => throw new SyntaxException()
-  }
-  
-  def expType: Parser[Expression] = "expType" ~ expression^^{
-    case "expType" ~ exp => new FunCall(Identifier("expType"), List(exp))
-    case _ => throw new SyntaxException()
-  }
+//  def valType: Parser[Expression] = "type" ~ expression^^{
+//    case "type" ~ exp => new FunCall(Identifier("valType"), List(exp))
+//    case _ => throw new SyntaxException()
+//  }
+//  
+//  def expType: Parser[Expression] = "expType" ~ expression^^{
+//    case "expType" ~ exp => new FunCall(Identifier("expType"), List(exp))
+//    case _ => throw new SyntaxException()
+//  }
 
   def declaration: Parser[Expression] = "def" ~ identifier ~ "=" ~ expression ^^{
     case "def" ~ id ~ "=" ~ exp => new Declaration(id, exp)

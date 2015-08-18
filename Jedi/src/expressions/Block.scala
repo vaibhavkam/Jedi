@@ -31,6 +31,6 @@ case class Block(locals: List[Expression]) extends SpecialForm {
   
 
   def getType(env: Environment):Type ={
-    Type.NUMBER
+    locals.last.getType(env)
   }
 }

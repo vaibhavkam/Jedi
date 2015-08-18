@@ -15,6 +15,6 @@ case class Declaration(ident: Identifier, exp: Expression) extends SpecialForm {
 	}
   
   def getType(env: Environment):Type ={
-    Type.NUMBER
+    Notification.OK().getType()
   }
 }

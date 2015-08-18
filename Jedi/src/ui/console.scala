@@ -37,9 +37,15 @@ object console {
     }
   }
 
-  def execute(exp: Expression): String = {
+
+  def getType(cmmd: String): String = {
     
-     ""+exp.execute(globalEnv)
+    val tree = parsers.parseAll(parsers.expression, cmmd)
+
+    tree match {
+      case t: parsers.Failure => throw new SyntaxException(t)
+      case _ => "" + tree.get.getType(globalEnv)
+    }
   }
 
   def repl {
@@ -58,15 +64,10 @@ object console {
         } else if (cmmd == "quit") {
           println("bye")
           more = false
-        } else {
-//          val expresion = parse(cmmd);
-//          println(expresion)
-//          val typ = expresion.getType(globalEnv);
-//                    println(typ)
-//          if(typ!=Type.ERROR)
-//            println(execute(expresion).toString())
-//          else
-//            throw new Exception()
+        } else if(cmmd.split(" +")(0)=="type"){
+          println(getType(cmmd.split(" +",2)(1)).toString());
+        } 
+        else {
           println(execute(cmmd).toString())
         }
       } catch {

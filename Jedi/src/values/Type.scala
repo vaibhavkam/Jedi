@@ -96,6 +96,7 @@ object Type{
     val FUNCTION = new Type("Function")
     val INTEGER = new Type("Integer")
     val VOID = new Type("Void")
+    val NOTIFICATION = new Type("Notification")
 
 
 

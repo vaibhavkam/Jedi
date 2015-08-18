@@ -15,6 +15,9 @@ import values.TupleType
 import values.Type
 import values.Value
 import values.Variable
+import values.Environment
+import values.Environment
+import values.VarType
 
 /**
  * @author Vaibhav
@@ -43,14 +46,20 @@ object system {
     }
   }
     
-  def getType(opcode: Identifier, args: List[Type]): Type = {
+  def getType(opcode: Identifier, operands: List[Expression], env: Environment): Type = {
+    
       opcode.name match {
-      case "add" => getAddType(args)
-      case "sub" => getSubType(args)
-      case "mul" => getMulType(args)
-      case "div" => getDivType(args)
-      case "fun" => getFunType(args)
-      case "tupleType" => getTupleType(args)
+      case "add" => getAddType(operands, env)
+      case "sub" => getSubType(operands, env)
+      case "mul" => getMulType(operands, env)
+      case "div" => getDivType(operands, env)
+      case "equals" => getEqualsType(operands, env)
+      case "less" => getLessType(operands, env)
+      case "fun" => getFunType(operands, env)
+      case "tupleType" => getTupleType(operands, env)
+      case "getTupleValue" => getTupleValueType(operands, env)
+      case "var" => getVarFuncType(operands, env)
+      case "val" => getValFuncType(operands, env)
       case _ => throw new UndefinedException(opcode.name)
     }
   }
@@ -147,7 +156,6 @@ object system {
     }
     
     private def valType(vals: List[Value]): Value = {
-      
       if (vals.isEmpty || vals.length > 1) 
         throw new TypeException("type expects 1 input")
       
@@ -156,6 +164,7 @@ object system {
 
    private def tuple(vals: List[Value]): Value = {
       
+    		
       if (vals.isEmpty) 
         throw new TypeException("Tuple expects more than 0 input")
 
@@ -181,8 +190,10 @@ object system {
       new Number(vals.head.asInstanceOf[Type].compareTo(vals.last.asInstanceOf[Type]))
     }
       
-    private def getAddType(types: List[Type]): Type = {   
+    private def getAddType(operands: List[Expression], env: Environment): Type = {   
       
+     val types: List[Type] = operands.map(_.getType(env))  
+ 
      if (types.isEmpty) 
        return  Type.ERROR
      val ok = types.filter(_.toString().equals(Type.NUMBER.toString()))
@@ -192,7 +203,9 @@ object system {
      Type.NUMBER
     }
 
-    private def getSubType(types: List[Type]): Type = {    
+    private def getSubType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
      if (types.isEmpty) 
        return  Type.ERROR
      val ok = types.filter(_.toString().equals(Type.NUMBER.toString()))
@@ -202,7 +215,9 @@ object system {
      Type.NUMBER
     }
 
-    private def getMulType(types: List[Type]): Type = {    
+    private def getMulType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
      if (types.isEmpty) 
        return  Type.ERROR
      val ok = types.filter(_.toString().equals(Type.NUMBER.toString()))
@@ -212,7 +227,9 @@ object system {
      Type.NUMBER
     }
 
-    private def getDivType(types: List[Type]): Type = {    
+    private def getDivType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
      if (types.isEmpty) 
        return  Type.ERROR
      val ok = types.filter(_.toString().equals(Type.NUMBER.toString()))
@@ -222,7 +239,32 @@ object system {
      Type.NUMBER
     }
 
-    private def getFunType(types: List[Type]): Type = {
+    private def getEqualsType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
+     if (types.isEmpty) 
+       return  Type.ERROR
+     val ok = types.filter(_.toString().equals(types.head.toString()))
+     
+     if (ok.length < types.length)
+        return Type.ERROR
+     Type.BOOLE
+    }
+
+    private def getLessType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))    
+     if (types.isEmpty) 
+       return  Type.ERROR
+     val ok = types.filter(_.toString().equals(types.head.toString()))
+     if (ok.length < types.length)
+        return Type.ERROR
+     Type.BOOLE
+    }
+
+    private def getFunType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
       
       if (types.isEmpty) 
        return  Type.ERROR
@@ -234,7 +276,9 @@ object system {
        Type.FUNCTION
     }
 
-    private def getTupleType(types: List[Type]): Type = {
+    private def getTupleType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
       
       if (types.isEmpty) 
        return  Type.ERROR
@@ -244,6 +288,25 @@ object system {
        if (ok.length < types.length)
           return Type.ERROR
        Type.TUPLE
+    }
+
+    private def getTupleValueType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
+     val vals: List[Value] = operands.map(_.execute(env))  
+
+     if (vals.isEmpty || vals.length != 2) 
+       return  Type.ERROR
+      
+     if (vals.head.isInstanceOf[Tuple]) {      
+        if(vals.last.isInstanceOf[Number])
+          vals.head.asInstanceOf[Tuple].getComponent()(Double.parseDouble(vals.last.asInstanceOf[Number].toString()).toInt).getType()
+        else
+         return  Type.ERROR
+      }
+      else {
+         return  Type.ERROR
+      }
     }
 
     private def getTupleValue(vals: List[Value]): Value = {
@@ -261,5 +324,28 @@ object system {
         throw new TypeException("get expects Tuple as a first parameter ")
       }
     }
+    
+    private def getVarFuncType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
+     
+      if (types.isEmpty || types.length > 1) 
+        Type.ERROR
+      else
+        new VarType(types.head)
+
+    }
+
+    private def getValFuncType(operands: List[Expression], env: Environment): Type = {   
+      
+     val types: List[Type] = operands.map(_.getType(env))
+     
+      if (types.isEmpty || types.length > 1) 
+        Type.ERROR
+      else
+        types.head.asInstanceOf[VarType].getContentType()
+
+    }
+
 
 }

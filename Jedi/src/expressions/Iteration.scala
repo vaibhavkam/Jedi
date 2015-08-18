@@ -19,6 +19,9 @@ case class Iteration(operands: List[Expression]) extends SpecialForm {
 	}
   
   def getType(env: Environment):Type ={
-    Type.NUMBER
+    if(operands(0).getType(env)==Type.BOOLE)
+      operands(1).getType(env)
+    else
+      Type.ERROR
   }
 }
