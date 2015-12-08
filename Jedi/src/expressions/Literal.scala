@@ -14,9 +14,9 @@ import values.Type
  */
 case class Literal() extends Expression with Value with Serializable {
 
-    def execute(env: Environment): Value = this    
+    override def execute(env: Environment): Value = this    
     
-    def getType(env: Environment):Type ={
+    override def getType(env: Environment):Type ={
       this.typ
     }
 }

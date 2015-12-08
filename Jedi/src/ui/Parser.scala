@@ -6,14 +6,9 @@ import values._
 
 class Parser extends RegexParsers {
 
-  def expression: Parser[Expression] =   tupleType| getTupleValue | typeInequality| fun | declaration | conditional | disjunction | failure("Invalid expression")
+  def expression: Parser[Expression] =   typeOf | tupleType| getTupleValue | fun | declaration | conditional | disjunction | failure("Invalid expression")
   
   def expressionTypeCheck: Parser[Expression] =  tupleType| fun|  identifier
-
-  def typeInequality: Parser[Expression] = expressionTypeCheck ~ "<" ~ expressionTypeCheck ^^{
-    case exp1 ~ "<" ~ exp2 => FunCall(Identifier("typeLess"), List(exp1,exp2))
-    case _ => throw new SyntaxException()
-  }
   
   def tupleType: Parser[Expression] = "TupleType" ~ operands ^^{
     case "TupleType" ~ exp => new FunCall(Identifier("tupleType"), exp)
@@ -30,10 +25,10 @@ class Parser extends RegexParsers {
 //    case _ => throw new SyntaxException()
 //  }
 //  
-//  def expType: Parser[Expression] = "expType" ~ expression^^{
-//    case "expType" ~ exp => new FunCall(Identifier("expType"), List(exp))
-//    case _ => throw new SyntaxException()
-//  }
+  def typeOf: Parser[Expression] = "typeOf" ~ expression^^{
+    case "typeOf" ~ exp => new FunCall(Identifier("typeOf"), List(exp))
+    case _ => throw new SyntaxException()
+  }
 
   def declaration: Parser[Expression] = "def" ~ identifier ~ "=" ~ expression ^^{
     case "def" ~ id ~ "=" ~ exp => new Declaration(id, exp)
@@ -114,9 +109,9 @@ class Parser extends RegexParsers {
     case _ => Nil
   }
   
-  def term: Parser[Expression] = getTupleValue| assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
+  def term: Parser[Expression] = variable| tuple | getTupleValue| assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
 
-  def literal: Parser[Literal] = boole | numeral | tuple
+  def literal: Parser[Literal] = boole | numeral | rational
 
   def numeral: Parser[Number] = """(\+|-)?[0-9]+(\.[0-9]+)?""".r ^^
     {
@@ -172,8 +167,10 @@ class Parser extends RegexParsers {
     case "while" ~ "(" ~ exp1 ~ ")" ~ exp2 => Iteration(List(exp1, exp2))
   }
 
-  def tuple: Parser[Tuple] = "Tuple" ~> operands  ^^ {
-    case p => new Tuple(p.asInstanceOf[List[values.Value]])
+  def tuple: Parser[Expression] = "Tuple" ~> operands  ^^ {
+    case p => new FunCall(Identifier("tuple"), p)
+    case _ => throw new SyntaxException()
+
   }
 
   def getTupleValue: Parser[Expression] = "get" ~ operands ^^{
@@ -181,4 +178,13 @@ class Parser extends RegexParsers {
     case _ => throw new SyntaxException()
   }
 
+  def rational: Parser[Rational] = "Rat" ~ "(" ~ numeral ~ "," ~ numeral~ ")"  ^^ {
+    case "Rat" ~ "(" ~n1  ~ "," ~  n2~ ")" => new Rational(n1.toString(),n2.toString())
+  }
+  
+  def variable: Parser[Expression] = "Variable" ~> operands  ^^ {
+    case p => new FunCall(Identifier("variableType"), p)
+    case _ => throw new SyntaxException()
+
+  }
 }

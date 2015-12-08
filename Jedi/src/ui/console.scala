@@ -11,12 +11,12 @@ object console {
   val parsers = new Parser
   val globalEnv = new Environment()
   var verbose = true
-  val boole = Type.BOOLE
-  boole.typ=Type.TYPE
+  val boolean = Type.BOOLEAN
+  boolean.typ=Type.TYPE
   val number = Type.NUMBER
   number.typ=Type.TYPE
-  val integer = Type.INTEGER
-  integer.typ=Type.TYPE
+  val rational = Type.RATIONAL
+  rational.typ=Type.TYPE
 
   def parse(cmmd: String): Expression = {
     
@@ -41,7 +41,6 @@ object console {
   def getType(cmmd: String): String = {
     
     val tree = parsers.parseAll(parsers.expression, cmmd)
-
     tree match {
       case t: parsers.Failure => throw new SyntaxException(t)
       case _ => "" + tree.get.getType(globalEnv)
@@ -50,8 +49,9 @@ object console {
 
   def repl {
         
-    globalEnv.put(new Identifier("Boolean"), boole);
+    globalEnv.put(new Identifier("Boolean"), boolean);
     globalEnv.put(new Identifier("Number"), number);
+    globalEnv.put(new Identifier("Rational"), rational);
     
     var cmmd: String = ""
     var more = true
@@ -68,7 +68,11 @@ object console {
           println(getType(cmmd.split(" +",2)(1)).toString());
         } 
         else {
-          println(execute(cmmd).toString())
+          
+          if(!getType(cmmd).toString().equalsIgnoreCase("Error"))
+            println(execute(cmmd).toString())
+          else
+            println("Error")
         }
       } catch {
         case e: SyntaxException => {
@@ -95,7 +99,7 @@ object console {
   
    def test {
         
-    globalEnv.put(new Identifier("Boolean"), boole);
+    globalEnv.put(new Identifier("Boolean"), boolean);
     globalEnv.put(new Identifier("Number"), number); 
   }
 

@@ -3,8 +3,16 @@ package expressions
 import ui._
 import values._
 
+/**
+ * @author Vaibhav
+ * Class to represent 'block' expression in Jedi
+ */
 case class Block(locals: List[Expression]) extends SpecialForm {
 
+  /**
+   * Function to execute expression. Expression execution results into value
+   * @param env
+   */  
   def execute(env: Environment): Value = {
 	  val localenv = new Environment(env)
 	  
@@ -29,8 +37,20 @@ case class Block(locals: List[Expression]) extends SpecialForm {
 	  }
 	}
   
-
+  /**
+   * Function to get type of expression
+   * @param env
+   */  
   def getType(env: Environment):Type ={
-    locals.last.getType(env)
+    
+    val localenv = new Environment(env)
+
+    val rvlc = locals.reverse     
+      
+    //Take all of the tail expressions, reverse them back, and execute in order
+    rvlc.tail.reverse.map(_.execute(localenv))
+      
+    //Applying rule of type inference
+    locals.last.getType(localenv)
   }
 }

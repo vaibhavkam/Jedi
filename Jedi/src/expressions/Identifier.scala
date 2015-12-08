@@ -18,8 +18,7 @@ case class Identifier(name: String,var typ: Type =null) extends Expression with 
 
   def execute(env: Environment): Value = {
     val vals = env.find(this)
-    this.typ = vals.typ
-      vals
+    vals
   }
   
   def getType(env: Environment):Type ={

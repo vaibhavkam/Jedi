@@ -32,9 +32,9 @@ case class Conjunction(operands:List[Expression]) extends SpecialForm{
 
     def getType(env: Environment):Type ={
       val args: List[Type] = operands.map(_.getType(env)) 
-      val ok = args.filter(_ ==Type.BOOLE)
+      val ok = args.filter(_ ==Type.BOOLEAN)
       if (ok.length == args.length)
-        Type.BOOLE
+        Type.BOOLEAN
       else
         Type.ERROR
     }

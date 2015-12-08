@@ -9,12 +9,20 @@ import values.Type
 
 /**
  * @author Vaibhav
- *
+ * Trait to represent expression in Jedi
  */
 trait Expression {
   
-    def execute(env: Environment): Value
-    
-    def getType(env: Environment): Type
+  /**
+   * Function to execute expression. Expression execution results into value
+   * @param env
+   */
+  def execute(env: Environment): Value
+
+  /**
+   * Function to get type of expression
+   * @param env
+   */
+  def getType(env: Environment): Type
     
 }

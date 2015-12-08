@@ -22,7 +22,7 @@ case class Assignment(id: Identifier, exp: Expression) extends SpecialForm {
 
   def getType(env: Environment):Type ={
 
-    if(exp.getType(env)!=id.getType(env).asInstanceOf[VarType].getContentType()){
+    if(!id.getType(env).isInstanceOf[VarType] || exp.getType(env)!=id.getType(env).asInstanceOf[VarType].getContentType()){
       Type.ERROR
     }
     else{

@@ -11,10 +11,14 @@ import values.Type
 
 /**
  * @author Vaibhav
- *
+ * Class to represent conditional expression in Jedi
  */
 case class Conditional(conditon: Expression, consequent: Expression, alternate: Expression = null) extends SpecialForm {
 
+  /**
+   * Function to execute expression. Expression execution results into value
+   * @param env
+   */
     def execute(env: Environment): Value = {
      
       var check = conditon.execute(env)
@@ -32,13 +36,18 @@ case class Conditional(conditon: Expression, consequent: Expression, alternate: 
         if (alternate != null)
           alternate.execute(env)
         else 
-          throw new TypeException("Null")
+          throw new TypeException("Type exception")
       } 
     }
-    
+
+  /**
+   * Function to get type of expression
+   * @param env
+   */
   def getType(env: Environment):Type ={
         
-    if(conditon.getType(env)==Type.BOOLE){
+    //Applying rule of type inference
+    if(conditon.getType(env)==Type.BOOLEAN){
       
       if(alternate!=null && (consequent.getType(env)==alternate.getType(env)))
         consequent.getType(env)

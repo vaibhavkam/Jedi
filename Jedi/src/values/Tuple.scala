@@ -11,7 +11,7 @@ import expressions.Identifier
  * @author Vaibhav
  *
  */
-class Tuple(components: List[Value]) extends Literal with Value {
+class Tuple(components: List[Value]) extends Value {
 
   typ=Type.TUPLE
 
@@ -29,11 +29,9 @@ class Tuple(components: List[Value]) extends Literal with Value {
   }
 
   override def getType():Type ={
-    
     var typeList = new ListBuffer[Type]()
     for(vals <- components)
       typeList+= vals.getType();
-    this.typ = new TupleType(typeList.toList)
-    this.typ
+    new TupleType(typeList.toList)
   }
 }
