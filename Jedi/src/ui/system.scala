@@ -251,7 +251,10 @@ object system {
  
      if (types.isEmpty) 
        return  Type.ERROR
-     val ok = types.filter(x=>(x.toString().equals(Type.NUMBER.toString()) || x.subType(Type.NUMBER) || x.toString().equals(Type.VALUE.toString())))
+     var ok = types.filter(x=>(x.toString().equals(Type.VALUE.toString())))
+     if (ok.length >0)
+       return Type.VALUE
+     ok = types.filter(x=>(x.toString().equals(Type.NUMBER.toString()) || x.subType(Type.NUMBER)))
      if (ok.length < types.length)
         return Type.ERROR
      Type.NUMBER

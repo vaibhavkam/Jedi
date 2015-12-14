@@ -6,7 +6,7 @@ import values._
 
 class Parser extends RegexParsers {
 
-  def expression: Parser[Expression] =   typeOf | tupleType| getTupleValue | fun | declaration | conditional | disjunction | failure("Invalid expression")
+  def expression: Parser[Expression] =   tupleType| getTupleValue | fun | declaration | conditional | disjunction | failure("Invalid expression")
   
   def expressionTypeCheck: Parser[Expression] =  tupleType| fun|  identifier
   
@@ -25,10 +25,6 @@ class Parser extends RegexParsers {
 //    case _ => throw new SyntaxException()
 //  }
 //  
-  def typeOf: Parser[Expression] = "typeOf" ~ expression^^{
-    case "typeOf" ~ exp => new FunCall(Identifier("typeOf"), List(exp))
-    case _ => throw new SyntaxException()
-  }
 
   def declaration: Parser[Expression] = "def" ~ identifier ~ "=" ~ expression ^^{
     case "def" ~ id ~ "=" ~ exp => new Declaration(id, exp)
@@ -109,7 +105,7 @@ class Parser extends RegexParsers {
     case _ => Nil
   }
   
-  def term: Parser[Expression] = variable| tuple | getTupleValue| assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
+  def term: Parser[Expression] =  typeOf | cast | variable| tuple | getTupleValue| assignment | iteration | deref | lambda | block | literal | identifier | "(" ~> expression <~ ")" | failure("Invalid term")
 
   def literal: Parser[Literal] = boole | numeral | rational
 
@@ -180,6 +176,7 @@ class Parser extends RegexParsers {
 
   def rational: Parser[Rational] = "Rat" ~ "(" ~ numeral ~ "," ~ numeral~ ")"  ^^ {
     case "Rat" ~ "(" ~n1  ~ "," ~  n2~ ")" => new Rational(n1.toString(),n2.toString())
+    case _ => throw new SyntaxException()
   }
   
   def variable: Parser[Expression] = "Variable" ~> operands  ^^ {
@@ -187,4 +184,16 @@ class Parser extends RegexParsers {
     case _ => throw new SyntaxException()
 
   }
+  
+  def cast: Parser[Expression] = "Cast" ~ "[" ~ expression ~ "," ~ expression~ "]"  ^^ {
+    case "Cast" ~ "[" ~e1  ~ "," ~  e2~ "]" => new Cast(e1,e2)
+    case _ => throw new SyntaxException()
+  }
+  
+  def typeOf: Parser[Expression] = "typeOf" ~ "(" ~ expression~ ")"  ^^ {
+    case "typeOf" ~ "(" ~ exp~ ")"  => new FunCall(Identifier("typeOf"), List(exp))
+    case _ => throw new SyntaxException()
+  }
+
+
 }

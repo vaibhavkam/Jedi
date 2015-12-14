@@ -25,7 +25,7 @@ class Type(str: String =null) extends Value {
     def subType(other:Type): Boolean = {
       
       //If type is equal to other type, return true
-      if(this == other)
+      if(this == other || other == Type.VALUE)
         return true;
       
       //Error type is sub-type all type

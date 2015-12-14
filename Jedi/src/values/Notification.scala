@@ -24,6 +24,7 @@ object Notification{
     def VARIABLE_UPDATED() = apply("variable is updated")
     def BINDING_CREATED() = apply("binding is created")
     def UNKNOWN() = apply("unknown")
+    def UNSPECIFIED() = apply("unspecified")
     def ERROR() = apply("error")
     def OK() = apply("OK")
     def DONE() = apply("done")

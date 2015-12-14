@@ -11,12 +11,14 @@ object console {
   val parsers = new Parser
   val globalEnv = new Environment()
   var verbose = true
+  val value = Type.VALUE
+  value.setType(Type.TYPE)
   val boolean = Type.BOOLEAN
-  boolean.typ=Type.TYPE
+  boolean.setType(Type.TYPE)
   val number = Type.NUMBER
-  number.typ=Type.TYPE
+  number.setType(Type.TYPE)
   val rational = Type.RATIONAL
-  rational.typ=Type.TYPE
+  rational.setType(Type.TYPE)
 
   def parse(cmmd: String): Expression = {
     
@@ -52,6 +54,7 @@ object console {
     globalEnv.put(new Identifier("Boolean"), boolean);
     globalEnv.put(new Identifier("Number"), number);
     globalEnv.put(new Identifier("Rational"), rational);
+    globalEnv.put(new Identifier("Value"), value);
     
     var cmmd: String = ""
     var more = true

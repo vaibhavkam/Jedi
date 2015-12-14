@@ -23,7 +23,7 @@ case class Lambda(parameters: Map[Identifier,Expression] , body: Expression) ext
       paramterList+=k
     } 
 	  val closure = new Closure(paramterList.toList, body, env)
-    closure.typ=this.getType(env);
+    closure.setType(this.getType(env));
     closure
 	}
 

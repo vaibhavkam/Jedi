@@ -51,12 +51,14 @@ case class FunCall(operator: Expression, operands: List[Expression] = Nil) exten
         val closure = operator.execute(env)
         if(closure.isInstanceOf[Closure]){
           val funType = closure.getType().asInstanceOf[FunType]
+          if(funType.getDomain()==Type.VOID)
+            return funType.getRange();            
+
           val tupleType = funType.getDomain().asInstanceOf[TupleType]
           
           if(tupleType.getComponent().size==operands.size){
             
             for((m,n) <- tupleType.getComponent().zip(operands.map(_.getType(env)))){
-              
               if(!m.toString().equals(n.toString()) && !n.subType(m)){
                 return Type.ERROR            
               }

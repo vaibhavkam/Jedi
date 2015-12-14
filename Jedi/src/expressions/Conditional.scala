@@ -49,10 +49,14 @@ case class Conditional(conditon: Expression, consequent: Expression, alternate: 
     //Applying rule of type inference
     if(conditon.getType(env)==Type.BOOLEAN){
       
-      if(alternate!=null && (consequent.getType(env)==alternate.getType(env)))
-        consequent.getType(env)
-      else
-        Type.ERROR
+      if(alternate!=null){
+          if(consequent.getType(env)==alternate.getType(env))
+            consequent.getType(env)
+          else
+            Type.ERROR
+      }else{
+         consequent.getType(env)
+      }
     }
     else
       Type.ERROR    
